@@ -1,0 +1,13 @@
+services:
+  fota-readiness:
+    build: .
+    image: fota-readiness-dashboard:1.0.0
+    container_name: fota-readiness-dashboard
+    ports:
+      - "8083:8080"
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
