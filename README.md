@@ -4,7 +4,11 @@ A browser-based engineering demonstration that evaluates whether a connected veh
 
 The dashboard turns vehicle conditions into a clear **Ready for update** or **Update blocked** decision and explains every gate in plain language.
 
-![FOTA Deployment Readiness Dashboard](screenshots/fota-dashboard-overview.jpg)
+![FOTA Deployment Readiness Dashboard](screenshots/fota-dashboard-hero.jpg)
+
+### Blocked deployment evidence
+
+![Blocked FOTA deployment showing failed readiness gates](screenshots/fota-blocked-evaluation.jpg)
 
 ## Purpose
 
