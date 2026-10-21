@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Evaluate whether a connected vehicle meets demonstration prerequisites for a firmware over-the-air update.">
+  <title>FOTA Readiness | Connected Vehicle Update Gate</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="FOTA Readiness home">
+      <span class="brand-mark" aria-hidden="true">FR</span>
+      <span>
+        <strong>FOTA Readiness</strong>
+        <small>Connected Vehicle Update Gate</small>
+      </span>
+    </a>
+    <span class="environment-badge">Engineering Demonstration</span>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Pre-installation decision support</p>
+        <h1>Know whether a vehicle is ready <em>before</em> an update begins.</h1>
+        <p class="hero-summary">Evaluate power, vehicle state, connectivity, storage, and diagnostic health in one clear readiness decision.</p>
+        <div class="hero-actions">
+          <button class="primary-button" id="run-evaluation" type="button">Run readiness evaluation</button>
+          <button class="secondary-button" id="load-ready" type="button">Load ready scenario</button>
+        </div>
+      </div>
+
+      <aside class="status-panel" aria-live="polite">
+        <div class="status-ring status-neutral" id="status-ring">
+          <span class="status-icon" id="status-icon">—</span>
+        </div>
+        <p class="status-label">Deployment decision</p>
+        <h2 id="overall-status">Awaiting evaluation</h2>
+        <p id="overall-message">Enter the vehicle conditions and run the readiness gate.</p>
+        <div class="score-row">
+          <span>Checks passed</span>
+          <strong id="score-value">0 / 7</strong>
+        </div>
+      </aside>
+    </section>
+
+    <section class="workspace" aria-labelledby="workspace-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Vehicle conditions</p>
+          <h2 id="workspace-title">Pre-update checklist</h2>
+        </div>
+        <div class="preset-actions" aria-label="Scenario presets">
+          <button class="text-button" id="load-blocked" type="button">Load blocked scenario</button>
+          <button class="text-button" id="reset-form" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <form class="input-card" id="readiness-form">
+          <div class="field-grid">
+            <label class="field">
+              <span class="field-title">Vehicle ID</span>
+              <input id="vehicle-id" name="vehicleId" type="text" value="EV-DEMO-042" maxlength="30" autocomplete="off">
+              <small>Friendly test-vehicle identifier</small>
+            </label>
+
+            <label class="field">
+              <span class="field-title">Target module</span>
+              <select id="target-module" name="targetModule">
+                <option>Gateway Module (GWM)</option>
+                <option>Telematics Control Unit (TCU)</option>
+                <option>Body Control Module (BCM)</option>
+                <option>Infotainment Module (APIM)</option>
+                <option>Powertrain Control Module (PCM)</option>
+              </select>
+              <small>ECU scheduled to receive the update</small>
+            </label>
+
+            <label class="field field-slider">
+              <span class="field-title">12 V system voltage</span>
+              <span class="value-pill"><output id="voltage-output">12.7</output> V</span>
+              <input id="voltage" name="voltage" type="range" min="10.0" max="15.5" value="12.7" step="0.1">
+              <small>Demo gate: 12.2–14.8 V</small>
+            </label>
+
+            <label class="field field-slider">
+              <span class="field-title">High-voltage battery charge</span>
+              <span class="value-pill"><output id="soc-output">82</output>%</span>
+              <input id="state-of-charge" name="stateOfCharge" type="range" min="10" max="100" value="82" step="1">
+              <small>Demo gate: 70% or higher</small>
+            </label>
+
+            <label class="field field-slider">
+              <span class="field-title">Available storage</span>
+              <span class="value-pill"><output id="storage-output">8.0</output> GB</span>
+              <input id="storage" name="storage" type="range" min="0" max="16" value="8" step="0.5">
+              <small>Demo gate: 4 GB or more</small>
+            </label>
+
+            <label class="field">
+              <span class="field-title">Network quality</span>
+              <select id="network-quality" name="networkQuality">
+                <option value="stable">Stable</option>
+                <option value="degraded">Degraded</option>
+                <option value="offline">Offline</option>
+              </select>
+              <small>A stable link is required</small>
+            </label>
+          </div>
+
+          <fieldset class="switch-group">
+            <legend>Vehicle state</legend>
+            <label class="switch-row">
+              <span><strong>Vehicle is parked</strong><small>Movement must be prevented during installation</small></span>
+              <input id="vehicle-parked" name="vehicleParked" type="checkbox" checked>
+            </label>
+            <label class="switch-row">
+              <span><strong>Ignition is off</strong><small>The vehicle is in the approved update state</small></span>
+              <input id="ignition-off" name="ignitionOff" type="checkbox" checked>
+            </label>
+            <label class="switch-row">
+              <span><strong>No blocking DTCs</strong><small>No critical diagnostic faults are active</small></span>
+              <input id="no-blocking-dtcs" name="noBlockingDtcs" type="checkbox" checked>
+            </label>
+          </fieldset>
+        </form>
+
+        <section class="results-card" aria-labelledby="results-title">
+          <div class="results-header">
+            <div>
+              <p class="eyebrow">Gate results</p>
+              <h3 id="results-title">Readiness evidence</h3>
+            </div>
+            <span class="timestamp" id="evaluation-time">Not evaluated</span>
+          </div>
+          <div class="check-list" id="check-list"></div>
+          <div class="results-footer">
+            <p id="next-action">Run the evaluation to generate a recommended next action.</p>
+            <button class="secondary-button" id="download-report" type="button" disabled>Download report</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="explanation" aria-labelledby="flow-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Decision flow</p>
+          <h2 id="flow-title">Where this gate fits</h2>
+        </div>
+      </div>
+      <div class="flow-grid">
+        <article><span>01</span><h3>Assess</h3><p>Collect current vehicle and network conditions.</p></article>
+        <article><span>02</span><h3>Gate</h3><p>Block the deployment when any prerequisite fails.</p></article>
+        <article><span>03</span><h3>Verify</h3><p>Validate package integrity and authorization separately.</p></article>
+        <article><span>04</span><h3>Install</h3><p>Begin the controlled ECU update only after all gates pass.</p></article>
+      </div>
+    </section>
+
+    <section class="disclaimer">
+      <strong>Scope:</strong> This is an educational engineering demonstration. Thresholds are illustrative and are not an OEM service specification. Production FOTA systems also require authenticated metadata, signed packages, rollback protection, secure boot, and platform-specific safety controls.
+    </section>
+  </main>
+
+  <footer>
+    <span>FOTA Deployment Readiness Dashboard</span>
+    <span>Designed for connected-vehicle validation workflows</span>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
