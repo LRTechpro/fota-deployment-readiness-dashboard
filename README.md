@@ -4,9 +4,7 @@ A browser-based engineering demonstration that evaluates whether a connected veh
 
 The dashboard turns vehicle conditions into a clear **Ready for update** or **Update blocked** decision and explains every gate in plain language.
 
-## Live demonstration
-
-https://fota-deployment-readiness-dashboard.blondlamb6.chatgpt.site
+![FOTA Deployment Readiness Dashboard](screenshots/fota-dashboard-overview.jpg)
 
 ## Purpose
 
@@ -52,6 +50,8 @@ Open `http://localhost:8000`.
 ```powershell
 npm test
 ```
+
+Six automated tests cover the ready state, threshold boundaries, degraded connectivity, and multiple simultaneous blockers. See [`TESTING.md`](TESTING.md) for the test plan and user-testing checklist.
 
 ## Run with Docker
 
